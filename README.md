@@ -393,7 +393,7 @@ This is a private Techno Hogar project. To contribute:
 ## Support
 
 For questions or issues:
-- Email: premium026@gmail.com
+- Email:
 
 ## License
 
