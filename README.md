@@ -1,6 +1,6 @@
-# 🔧 Techno Hogar - Sistema de Gestión de Servicios Técnicos
+# 🔧 Techno Hogar - Technical Service Management System
 
-Sistema web completo para la gestión de solicitudes de servicio técnico de reparación de electrodomésticos. Incluye sitio web público, panel de administración, integración con Google Sheets y notificaciones por WhatsApp.
+Complete web system for managing appliance repair service requests. Includes public website, admin panel, Google Sheets integration, and WhatsApp notifications.
 
 [![NestJS](https://img.shields.io/badge/NestJS-10.x-E0234E?logo=nestjs)](https://nestjs.com/)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react)](https://react.dev/)
@@ -10,115 +10,115 @@ Sistema web completo para la gestión de solicitudes de servicio técnico de rep
 [![Tests](https://img.shields.io/badge/Tests-Passing-success?logo=jest)](https://jestjs.io/)
 [![Coverage](https://img.shields.io/badge/Coverage-Check_CI-blue?logo=codecov)](https://codecov.io/)
 
-## Tecnologías
+## Technologies
 
 ### Backend
-- **NestJS** - Framework Node.js con TypeScript
-- **TypeORM** - ORM para MySQL
-- **MySQL** - Base de datos relacional
-- **Docker** - Contenedores para desarrollo y producción
+- **NestJS** - Node.js framework with TypeScript
+- **TypeORM** - ORM for MySQL
+- **MySQL** - Relational database
+- **Docker** - Containers for development and production
 
 ### Frontend
-- **React** - Librería UI con Hooks
-- **TypeScript** - Tipado estático
-- **Vite** - Build tool moderno y rápido
-- **TailwindCSS** - Framework CSS utility-first
-- **React Router** - Navegación SPA
-- **React Hook Form** - Manejo de formularios
-- **Axios** - Cliente HTTP
+- **React** - UI library with Hooks
+- **TypeScript** - Static typing
+- **Vite** - Modern and fast build tool
+- **TailwindCSS** - Utility-first CSS framework
+- **React Router** - SPA navigation
+- **React Hook Form** - Form management
+- **Axios** - HTTP client
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 TecnoWeb/
-├── backend/                    # API REST con NestJS
+├── backend/                    # REST API with NestJS
 │   ├── src/
-│   │   ├── clientes/          # Módulo de clientes
-│   │   ├── servicios/         # Módulo de servicios
-│   │   ├── config/            # Configuración de base de datos
-│   │   ├── app.module.ts      # Módulo principal
-│   │   └── main.ts            # Punto de entrada
+│   │   ├── clientes/          # Clients module
+│   │   ├── servicios/         # Services module
+│   │   ├── config/            # Database configuration
+│   │   ├── app.module.ts      # Main module
+│   │   └── main.ts            # Entry point
 │   ├── database/
-│   │   └── init.sql           # Script de inicialización de BD
+│   │   └── init.sql           # DB initialization script
 │   ├── Dockerfile
 │   └── package.json
-├── frontend/                   # Aplicación React
+├── frontend/                   # React application
 │   ├── src/
-│   │   ├── components/        # Componentes reutilizables
-│   │   ├── pages/             # Páginas de la app
-│   │   ├── services/          # Servicios API
-│   │   ├── types/             # Definiciones TypeScript
-│   │   ├── App.tsx            # Componente raíz
-│   │   └── main.tsx           # Punto de entrada
+│   │   ├── components/        # Reusable components
+│   │   ├── pages/             # App pages
+│   │   ├── services/          # API services
+│   │   ├── types/             # TypeScript definitions
+│   │   ├── App.tsx            # Root component
+│   │   └── main.tsx           # Entry point
 │   ├── Dockerfile
 │   └── package.json
-├── docker-compose.yml          # Orquestación de contenedores
-├── Tech/                       # Código legacy PHP (no tocar)
+├── docker-compose.yml          # Container orchestration
+├── Tech/                       # Legacy PHP code (do not touch)
 └── README.md
 ```
 
-## Inicio Rápido
+## Quick Start
 
-### Prerrequisitos
-- **Docker** y **Docker Compose** instalados
-- **Node.js 18+** (solo para desarrollo local sin Docker)
-- **Git** para control de versiones
+### Prerequisites
+- **Docker** and **Docker Compose** installed
+- **Node.js 18+** (only for local development without Docker)
+- **Git** for version control
 
-### Opción 1: Con Docker (Recomendado)
+### Option 1: With Docker (Recommended)
 
-Esta es la forma más rápida de ejecutar el proyecto completo:
+This is the fastest way to run the complete project:
 
 ```bash
-# 1. Clonar el repositorio y cambiar a la rama de modernización
+# 1. Clone repository and switch to modernization branch
 git checkout modernizacion
 
-# 2. Iniciar todos los servicios (primera vez puede tardar)
+# 2. Start all services (first time may take a while)
 docker-compose up
 
-# O en modo detached (segundo plano)
+# Or in detached mode (background)
 docker-compose up -d
 
-# Ver logs
+# View logs
 docker-compose logs -f
 
-# Detener servicios
+# Stop services
 docker-compose down
 ```
 
-**URLs disponibles:**
+**Available URLs:**
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:3000/api
 - **Health Check:** http://localhost:3000/api/health
 - **MySQL:** localhost:3306
 
-**Credenciales de MySQL:**
+**MySQL Credentials:**
 - Host: `localhost`
-- Puerto: `3306`
-- Usuario: `techno_user`
+- Port: `3306`
+- User: `techno_user`
 - Password: `techno_password`
-- Base de datos: `techno_hogar`
+- Database: `techno_hogar`
 
-### Opción 2: Desarrollo Local (sin Docker)
+### Option 2: Local Development (without Docker)
 
 #### 1. Backend
 
 ```bash
 cd backend
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Asegurarse de tener MySQL corriendo localmente
-# Crear base de datos 'techno_hogar'
+# Make sure you have MySQL running locally
+# Create database 'techno_hogar'
 
-# Configurar .env con tus credenciales de MySQL local
+# Configure .env with your local MySQL credentials
 cp .env.example .env
-# Editar .env según tu configuración
+# Edit .env according to your configuration
 
-# Ejecutar en modo desarrollo
+# Run in development mode
 npm run start:dev
 
-# El backend estará en http://localhost:3000
+# Backend will be at http://localhost:3000
 ```
 
 #### 2. Frontend
@@ -126,124 +126,124 @@ npm run start:dev
 ```bash
 cd frontend
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Ejecutar en modo desarrollo
+# Run in development mode
 npm run dev
 
-# El frontend estará en http://localhost:5173
+# Frontend will be at http://localhost:5173
 ```
 
 ## Testing
 
-### Ejecutar Tests
+### Running Tests
 
 ```bash
-# Ejecutar todos los tests
+# Run all tests
 docker exec techno-hogar-backend npm test
 
-# Ejecutar tests con cobertura
+# Run tests with coverage
 docker exec techno-hogar-backend npm run test:cov
 
-# Ejecutar tests en modo watch
+# Run tests in watch mode
 docker exec techno-hogar-backend npm run test:watch
 
-# Ejecutar tests E2E
+# Run E2E tests
 docker exec techno-hogar-backend npm run test:e2e
 ```
 
-### Cobertura de Tests
+### Test Coverage
 
-El proyecto incluye:
-- ✅ **Unit Tests** - Tests unitarios para servicios y validadores
-- ✅ **Integration Tests** - Tests de integración para listeners
-- ✅ **E2E Tests** - Tests end-to-end para endpoints de API
-- ✅ **Profanity Filter Tests** - Validación de filtro de palabras prohibidas
+The project includes:
+- ✅ **Unit Tests** - Unit tests for services and validators
+- ✅ **Integration Tests** - Integration tests for listeners
+- ✅ **E2E Tests** - End-to-end tests for API endpoints
+- ✅ **Profanity Filter Tests** - Validation of prohibited words filter
 
-**Archivos de test:**
-- [servicios.service.spec.ts](backend/src/servicios/servicios.service.spec.ts) - Tests del servicio principal
-- [profanity-filter.validator.spec.ts](backend/src/common/validators/profanity-filter.validator.spec.ts) - Tests del validador de profanidad
-- [notification.listener.spec.ts](backend/src/common/listeners/notification.listener.spec.ts) - Tests del listener de notificaciones
-- [google-sheets.service.spec.ts](backend/src/common/services/google-sheets.service.spec.ts) - Tests de Google Sheets
-- [whatsapp.service.spec.ts](backend/src/common/services/whatsapp.service.spec.ts) - Tests de WhatsApp
-- [app.e2e-spec.ts](backend/test/app.e2e-spec.ts) - Tests E2E de la API
+**Test files:**
+- [servicios.service.spec.ts](backend/src/servicios/servicios.service.spec.ts) - Main service tests
+- [profanity-filter.validator.spec.ts](backend/src/common/validators/profanity-filter.validator.spec.ts) - Profanity validator tests
+- [notification.listener.spec.ts](backend/src/common/listeners/notification.listener.spec.ts) - Notification listener tests
+- [google-sheets.service.spec.ts](backend/src/common/services/google-sheets.service.spec.ts) - Google Sheets tests
+- [whatsapp.service.spec.ts](backend/src/common/services/whatsapp.service.spec.ts) - WhatsApp tests
+- [app.e2e-spec.ts](backend/test/app.e2e-spec.ts) - API E2E tests
 
 ### CI/CD
 
-El proyecto incluye GitHub Actions para ejecutar tests automáticamente en cada push o pull request:
-- ✅ Tests unitarios y de integración
-- ✅ Verificación de cobertura de código (mínimo 50%)
-- ✅ Linting del código
-- ✅ Build de la aplicación
+The project includes GitHub Actions to run tests automatically on every push or pull request:
+- ✅ Unit and integration tests
+- ✅ Code coverage verification (minimum 50%)
+- ✅ Code linting
+- ✅ Application build
 
-Ver: [.github/workflows/backend-tests.yml](.github/workflows/backend-tests.yml)
+See: [.github/workflows/backend-tests.yml](.github/workflows/backend-tests.yml)
 
-## Funcionalidades
+## Features
 
-### Implementadas ✅
-- ✅ Formulario de solicitud de servicio técnico
-- ✅ Gestión completa de clientes (CRUD)
-- ✅ Registro de electrodomésticos con tipo, marca y modelo
-- ✅ Programación de citas con fecha preferida
-- ✅ Niveles de urgencia (Baja, Media, Alta)
-- ✅ API REST completa con validaciones
-- ✅ Interfaz moderna y responsive
-- ✅ TypeScript en frontend y backend
-- ✅ Contenedores Docker para fácil despliegue
+### Implemented ✅
+- ✅ Technical service request form
+- ✅ Complete client management (CRUD)
+- ✅ Appliance registration with type, brand, and model
+- ✅ Appointment scheduling with preferred date
+- ✅ Urgency levels (Low, Medium, High)
+- ✅ Complete REST API with validations
+- ✅ Modern and responsive interface
+- ✅ TypeScript in frontend and backend
+- ✅ Docker containers for easy deployment
 
-### Completadas Recientemente ✅
-- ✅ Panel de administración completo
-- ✅ Sistema de autenticación para administradores
-- ✅ Dashboard con estadísticas en tiempo real
-- ✅ Integración con Google Sheets (registro automático con formato profesional)
-- ✅ Notificaciones por WhatsApp (CallMeBot/Twilio)
-- ✅ Diseño responsive moderno con esquema cyan/teal
-- ✅ **Observer Pattern** - EventEmitter para notificaciones desacopladas
-- ✅ **Filtro de Profanidad** - Validación de contenido inapropiado en formularios
-- ✅ **Tests Unitarios y E2E** - Cobertura de tests para servicios críticos
-- ✅ **CI/CD con GitHub Actions** - Tests automáticos en cada push/PR
+### Recently Completed ✅
+- ✅ Complete admin panel
+- ✅ Authentication system for administrators
+- ✅ Dashboard with real-time statistics
+- ✅ Google Sheets integration (automatic registration with professional formatting)
+- ✅ WhatsApp notifications (CallMeBot/Twilio)
+- ✅ Modern responsive design with cyan/teal scheme
+- ✅ **Observer Pattern** - EventEmitter for decoupled notifications
+- ✅ **Profanity Filter** - Inappropriate content validation in forms
+- ✅ **Unit and E2E Tests** - Test coverage for critical services
+- ✅ **CI/CD with GitHub Actions** - Automatic tests on every push/PR
 
-### Próximamente 🚧
-- 🚧 Sistema de calendario para agendar citas
-- 🚧 Galería de trabajos realizados
-- 🚧 Bot de WhatsApp con IA conversacional
-- 🚧 Sistema de facturación
-- 🚧 Página de Política de Privacidad y Términos
-- 🚧 Reportes y estadísticas avanzadas
+### Coming Soon 🚧
+- 🚧 Calendar system for scheduling appointments
+- 🚧 Gallery of completed work
+- 🚧 WhatsApp bot with conversational AI
+- 🚧 Billing system
+- 🚧 Privacy Policy and Terms page
+- 🚧 Advanced reports and statistics
 
 ## API Endpoints
 
-### Clientes
+### Clients
 ```
-POST   /api/clientes              - Crear nuevo cliente
-GET    /api/clientes              - Listar todos los clientes
-GET    /api/clientes?search=...   - Buscar clientes
-GET    /api/clientes/:id          - Obtener cliente por ID
-PATCH  /api/clientes/:id          - Actualizar cliente
-DELETE /api/clientes/:id          - Eliminar cliente
+POST   /api/clientes              - Create new client
+GET    /api/clientes              - List all clients
+GET    /api/clientes?search=...   - Search clients
+GET    /api/clientes/:id          - Get client by ID
+PATCH  /api/clientes/:id          - Update client
+DELETE /api/clientes/:id          - Delete client
 ```
 
-### Servicios
+### Services
 ```
-POST   /api/servicios                  - Crear nueva solicitud de servicio
-GET    /api/servicios                  - Listar todos los servicios
-GET    /api/servicios?estado=...       - Filtrar por estado
-GET    /api/servicios/:id              - Obtener servicio por ID
-GET    /api/servicios/cliente/:id      - Servicios de un cliente
-PATCH  /api/servicios/:id              - Actualizar servicio
-DELETE /api/servicios/:id              - Eliminar servicio
+POST   /api/servicios                  - Create new service request
+GET    /api/servicios                  - List all services
+GET    /api/servicios?estado=...       - Filter by status
+GET    /api/servicios/:id              - Get service by ID
+GET    /api/servicios/cliente/:id      - Services for a client
+PATCH  /api/servicios/:id              - Update service
+DELETE /api/servicios/:id              - Delete service
 ```
 
 ### Health Check
 ```
-GET    /api                - Información de la API
-GET    /api/health         - Estado del servicio
+GET    /api                - API information
+GET    /api/health         - Service status
 ```
 
-## Modelos de Datos
+## Data Models
 
-### Cliente
+### Client
 ```typescript
 {
   id: number
@@ -256,7 +256,7 @@ GET    /api/health         - Estado del servicio
 }
 ```
 
-### Servicio
+### Service
 ```typescript
 {
   id: number
@@ -277,38 +277,38 @@ GET    /api/health         - Estado del servicio
 }
 ```
 
-## Comandos Útiles
+## Useful Commands
 
 ### Docker
 ```bash
-# Ver contenedores activos
+# View active containers
 docker ps
 
-# Ver logs de un servicio específico
+# View logs for a specific service
 docker-compose logs backend
 docker-compose logs frontend
 docker-compose logs mysql
 
-# Reiniciar un servicio
+# Restart a service
 docker-compose restart backend
 
-# Reconstruir contenedores (después de cambios en dependencias)
+# Rebuild containers (after dependency changes)
 docker-compose up --build
 
-# Limpiar todo y empezar de cero
+# Clean everything and start from scratch
 docker-compose down -v
 docker-compose up --build
 ```
 
 ### Backend
 ```bash
-# Ejecutar tests
+# Run tests
 npm run test
 
-# Generar build de producción
+# Generate production build
 npm run build
 
-# Ejecutar en producción
+# Run in production
 npm run start:prod
 
 # Linting
@@ -317,52 +317,52 @@ npm run lint
 
 ### Frontend
 ```bash
-# Build de producción
+# Production build
 npm run build
 
-# Preview del build
+# Preview build
 npm run preview
 
 # Linting
 npm run lint
 ```
 
-## Migración desde el Código Legacy
+## Migration from Legacy Code
 
-El código PHP original se encuentra en la carpeta `Tech/` y **NO debe modificarse**. Este nuevo sistema está en la rama `modernizacion` y reemplaza completamente la funcionalidad anterior con tecnologías modernas.
+The original PHP code is located in the `Tech/` folder and **should NOT be modified**. This new system is on the `modernizacion` branch and completely replaces the previous functionality with modern technologies.
 
-### Diferencias principales:
-- ❌ **Antes:** PHP monolítico con mezcla de lógica y presentación
-- ✅ **Ahora:** API REST separada del frontend (arquitectura desacoplada)
+### Main differences:
+- ❌ **Before:** Monolithic PHP with mixed logic and presentation
+- ✅ **Now:** REST API separated from frontend (decoupled architecture)
 
-- ❌ **Antes:** Bootstrap 3 + jQuery
-- ✅ **Ahora:** React + TailwindCSS
+- ❌ **Before:** Bootstrap 3 + jQuery
+- ✅ **Now:** React + TailwindCSS
 
-- ❌ **Antes:** Sistema de login/registro
-- ✅ **Ahora:** Formulario de solicitud de servicio (sin autenticación de usuarios)
+- ❌ **Before:** Login/registration system
+- ✅ **Now:** Service request form (no user authentication)
 
-- ❌ **Antes:** MySQL con consultas directas
-- ✅ **Ahora:** TypeORM con entidades y migraciones
+- ❌ **Before:** MySQL with direct queries
+- ✅ **Now:** TypeORM with entities and migrations
 
-## Despliegue a Producción
+## Production Deployment
 
-### Usando Docker Compose
+### Using Docker Compose
 
 ```bash
-# 1. Configurar variables de entorno de producción
+# 1. Configure production environment variables
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 
-# Editar los archivos .env con valores de producción
+# Edit .env files with production values
 
-# 2. Construir y ejecutar en modo producción
+# 2. Build and run in production mode
 docker-compose -f docker-compose.yml up -d --build
 
-# 3. Verificar que todo esté corriendo
+# 3. Verify everything is running
 docker-compose ps
 ```
 
-### Variables de Entorno Importantes
+### Important Environment Variables
 
 **Backend (.env):**
 ```env
@@ -370,31 +370,31 @@ NODE_ENV=production
 DB_HOST=mysql
 DB_PORT=3306
 DB_USERNAME=techno_user
-DB_PASSWORD=CAMBIAR_EN_PRODUCCION
+DB_PASSWORD=CHANGE_IN_PRODUCTION
 DB_DATABASE=techno_hogar
 PORT=3000
-CORS_ORIGIN=https://tu-dominio.com
+CORS_ORIGIN=https://your-domain.com
 ```
 
 **Frontend (.env):**
 ```env
-VITE_API_URL=https://api.tu-dominio.com/api
+VITE_API_URL=https://api.your-domain.com/api
 ```
 
-## Contribución
+## Contributing
 
-Este es un proyecto privado de Techno Hogar. Para contribuir:
+This is a private Techno Hogar project. To contribute:
 
-1. Crear una nueva rama desde `modernizacion`
-2. Realizar cambios
-3. Hacer commit con mensajes descriptivos
-4. Crear Pull Request para revisión
+1. Create a new branch from `modernizacion`
+2. Make changes
+3. Commit with descriptive messages
+4. Create Pull Request for review
 
-## Soporte
+## Support
 
-Para dudas o problemas:
+For questions or issues:
 - Email: premium026@gmail.com
 
-## Licencia
+## License
 
-Proyecto privado - Techno Hogar © 2026
+Private project - Techno Hogar © 2026
