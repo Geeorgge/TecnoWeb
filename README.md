@@ -1,4 +1,4 @@
-# 🔧 Techno Hogar - Technical Service Management System
+# 🔧 Tecno Hogar - Technical Service Management System
 
 Complete web system for managing appliance repair service requests. Includes public website, admin panel, Google Sheets integration, and WhatsApp notifications.
 
@@ -397,4 +397,4 @@ For questions or issues:
 
 ## License
 
-Private project - Techno Hogar © 2026
+Private project - Tecno Hogar © 2026
