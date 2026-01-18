@@ -16,13 +16,14 @@ import { UpdateServicioDto } from './dto/update-servicio.dto';
 import { EstadoServicio } from './entities/servicio.entity';
 import { ProfanityRateLimitGuard } from '../common/guards/profanity-rate-limit.guard';
 import { ProfanityLoggerInterceptor } from '../common/interceptors/profanity-logger.interceptor';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 @Controller('servicios')
 export class ServiciosController {
   constructor(private readonly serviciosService: ServiciosService) {}
 
   @Post()
-  @UseGuards(ProfanityRateLimitGuard)
+  @UseGuards(RateLimitGuard, ProfanityRateLimitGuard)
   @UseInterceptors(ProfanityLoggerInterceptor)
   create(@Body() createServicioDto: CreateServicioDto) {
     return this.serviciosService.create(createServicioDto);
