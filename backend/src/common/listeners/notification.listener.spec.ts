@@ -148,7 +148,7 @@ describe('NotificationListener', () => {
       const mockServicio: Partial<Servicio> = {
         id: 1,
         clienteId: 1,
-        tipoElectrodomestico: TipoElectrodomestico.ESTUFA,
+        tipoElectrodomestico: TipoElectrodomestico.REFRIGERADOR,
         problema: 'No enciende',
         urgencia: Urgencia.BAJA,
         estado: EstadoServicio.PENDIENTE,
@@ -186,7 +186,7 @@ describe('NotificationListener', () => {
       const mockServicio: Partial<Servicio> = {
         id: 1,
         clienteId: 1,
-        tipoElectrodomestico: TipoElectrodomestico.MICROONDAS,
+        tipoElectrodomestico: TipoElectrodomestico.LAVADORA,
         problema: 'No calienta',
         urgencia: Urgencia.MEDIA,
         estado: EstadoServicio.PENDIENTE,

@@ -40,14 +40,24 @@ export class NoProfanityConstraint implements ValidatorConstraintInterface {
   validate(text: string): boolean {
     if (!text) return true; // Empty text is valid
 
-    const normalizedText = text.toLowerCase();
+    // Normalize text: lowercase, remove special chars, remove repeated letters
+    const normalizedText = this.normalizeText(text);
 
-    // Check if any profanity word is in the text
+    // Check if any profanity word is in the normalized text
     return !PROFANITY_LIST.some((word) => {
-      // Use word boundaries to avoid false positives
-      const regex = new RegExp(`\\b${word}\\b`, 'i');
-      return regex.test(normalizedText);
+      const normalizedWord = this.normalizeText(word);
+
+      // Check if normalized word appears in normalized text
+      // This catches: puta, putaaa, p.u.t.a, p-u-t-a, etc.
+      return normalizedText.includes(normalizedWord);
     });
+  }
+
+  private normalizeText(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^a-záéíóúñ]/g, '') // Remove all non-letter chars (spaces, dots, hyphens, etc)
+      .replace(/(.)\1+/g, '$1'); // Replace repeated letters with single letter (aaa -> a)
   }
 
   defaultMessage(): string {

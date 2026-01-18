@@ -1,15 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WhatsAppService } from './whatsapp.service';
+import { CostMonitorService } from './cost-monitor.service';
 
 describe('WhatsAppService', () => {
   let service: WhatsAppService;
+
+  const mockCostMonitorService = {
+    canSendMessage: jest.fn().mockResolvedValue({ allowed: true, reason: 'OK' }),
+    recordMessageSent: jest.fn().mockResolvedValue(undefined),
+  };
 
   beforeEach(async () => {
     // Set environment variables for testing
     process.env.WHATSAPP_NOTIFICATIONS_ENABLED = 'false';
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [WhatsAppService],
+      providers: [
+        WhatsAppService,
+        {
+          provide: CostMonitorService,
+          useValue: mockCostMonitorService,
+        },
+      ],
     }).compile();
 
     service = module.get<WhatsAppService>(WhatsAppService);

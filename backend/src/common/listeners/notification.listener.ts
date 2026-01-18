@@ -18,6 +18,7 @@ export class NotificationListener {
     const servicio = event.servicio;
 
     const data = {
+      servicioId: servicio.id, // ID del servicio para referencia
       cliente: servicio.cliente.nombre,
       telefono: servicio.cliente.telefono,
       email: servicio.cliente.email,
@@ -28,6 +29,7 @@ export class NotificationListener {
       problema: servicio.problema,
       ubicacionServicio: servicio.ubicacionServicio,
       urgencia: servicio.urgencia,
+      fechaPreferida: servicio.fechaPreferida, // Fecha preferida del cliente
       fechaSolicitud: new Date().toLocaleString('es-MX', {
         timeZone: 'America/Mexico_City',
       }),
