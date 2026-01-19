@@ -20,6 +20,9 @@ export class AppController {
       status: 'ok',
       timestamp: new Date().toISOString(),
       service: 'Techno Hogar API',
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'development',
+      uptime: process.uptime(),
     };
   }
 
