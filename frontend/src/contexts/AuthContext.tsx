@@ -1,42 +1,84 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { authApi } from '../services/api'
+
+interface User {
+  username: string
+  role: string
+}
 
 interface AuthContextType {
   isAuthenticated: boolean
-  login: (username: string, password: string) => boolean
+  user: User | null
+  login: (username: string, password: string) => Promise<boolean>
   logout: () => void
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Verificar si hay sesión guardada al cargar
+  // Verify token on load
   useEffect(() => {
-    const savedAuth = localStorage.getItem('techno_admin_auth')
-    if (savedAuth === 'true') {
-      setIsAuthenticated(true)
+    const verifyAuth = async () => {
+      const token = localStorage.getItem('techno_admin_token')
+
+      if (!token) {
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const response = await authApi.verifyToken()
+        if (response.valid) {
+          const profile = await authApi.getProfile()
+          setUser({ username: profile.username, role: profile.role })
+          setIsAuthenticated(true)
+        } else {
+          localStorage.removeItem('techno_admin_token')
+          localStorage.removeItem('techno_admin_auth')
+        }
+      } catch {
+        localStorage.removeItem('techno_admin_token')
+        localStorage.removeItem('techno_admin_auth')
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    verifyAuth()
   }, [])
 
-  const login = (username: string, password: string): boolean => {
-    // Credenciales hardcodeadas (puedes cambiarlas)
-    // En producción, esto debería verificarse contra el backend
-    if (username === 'admin' && password === 'techno2024') {
-      setIsAuthenticated(true)
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const response = await authApi.login(username, password)
+
+      // Store token
+      localStorage.setItem('techno_admin_token', response.access_token)
       localStorage.setItem('techno_admin_auth', 'true')
+
+      // Update state
+      setUser(response.user)
+      setIsAuthenticated(true)
+
       return true
+    } catch {
+      return false
     }
-    return false
   }
 
   const logout = () => {
-    setIsAuthenticated(false)
+    localStorage.removeItem('techno_admin_token')
     localStorage.removeItem('techno_admin_auth')
+    setUser(null)
+    setIsAuthenticated(false)
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   )

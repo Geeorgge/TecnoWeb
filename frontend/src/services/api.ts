@@ -10,6 +10,28 @@ const api = axios.create({
   },
 })
 
+// Add auth token to requests if available
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('techno_admin_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Handle 401 responses
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('techno_admin_token')
+      localStorage.removeItem('techno_admin_auth')
+      window.location.href = '/admin'
+    }
+    return Promise.reject(error)
+  }
+)
+
 // Clientes
 export const clientesApi = {
   create: async (data: CreateClienteDto): Promise<Cliente> => {
@@ -56,6 +78,24 @@ export const serviciosApi = {
 
   getByCliente: async (clienteId: number): Promise<Servicio[]> => {
     const response = await api.get<Servicio[]>(`/servicios/cliente/${clienteId}`)
+    return response.data
+  },
+}
+
+// Auth API
+export const authApi = {
+  login: async (username: string, password: string): Promise<{ access_token: string; user: { username: string; role: string } }> => {
+    const response = await api.post('/auth/login', { username, password })
+    return response.data
+  },
+
+  verifyToken: async (): Promise<{ valid: boolean }> => {
+    const response = await api.get('/auth/verify')
+    return response.data
+  },
+
+  getProfile: async (): Promise<{ userId: string; username: string; role: string }> => {
+    const response = await api.get('/auth/profile')
     return response.data
   },
 }
