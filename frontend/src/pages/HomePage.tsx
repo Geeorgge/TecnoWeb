@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
+// Contact configuration from environment
+const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
+const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
+
 const HomePage = () => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -23,11 +27,11 @@ const HomePage = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center group">
+            <Link to="/" className="flex items-center group overflow-hidden rounded-lg border border-gray-200 shadow-sm">
               <img
                 src="/logo.png"
                 alt="Tecno Hogar Logo"
-                className="w-auto h-12 md:h-14 object-contain p-1 border border-gray-200 rounded-lg shadow-sm"
+                className="w-auto h-12 md:h-14 object-cover scale-105"
               />
             </Link>
 
@@ -193,7 +197,7 @@ const HomePage = () => {
                   Agendar Servicio Ahora
                 </Link>
                 <a
-                  href="https://wa.me/5218441234567?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico"
+                  href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 px-8 py-3.5 rounded-lg font-semibold border-2 border-gray-200 transition-all hover:border-green-500 hover:text-green-600"
@@ -661,7 +665,7 @@ const HomePage = () => {
                   Llenar Formulario
                 </Link>
                 <a
-                  href="https://wa.me/5218441234567?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Saltillo"
+                  href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Saltillo`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-all"
@@ -672,7 +676,7 @@ const HomePage = () => {
                   WhatsApp
                 </a>
                 <a
-                  href="tel:+5218441234567"
+                  href={`tel:+${PHONE_NUMBER}`}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -731,7 +735,7 @@ const HomePage = () => {
                   Llenar Formulario
                 </Link>
                 <a
-                  href="https://wa.me/5218441234567?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Arteaga%2FRamos%20Arizpe"
+                  href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Arteaga%2FRamos%20Arizpe`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-all"
@@ -742,7 +746,7 @@ const HomePage = () => {
                   WhatsApp
                 </a>
                 <a
-                  href="tel:+5218441234567"
+                  href={`tel:+${PHONE_NUMBER}`}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -838,7 +842,7 @@ const HomePage = () => {
                 Solicitar Servicio Ahora
               </Link>
               <a
-                href="https://wa.me/5218441234567?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico"
+                href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-4 rounded-lg font-semibold transition-all border-2 border-white/30"
@@ -920,11 +924,11 @@ const HomePage = () => {
           <div className="grid md:grid-cols-4 gap-10">
             {/* Logo & Description */}
             <div>
-              <Link to="/" className="inline-block mb-4">
+              <Link to="/" className="inline-block mb-4 overflow-hidden rounded-lg border border-slate-600">
                 <img
                   src="/logo-footer.png"
                   alt="Tecno Hogar Logo"
-                  className="w-auto h-16 object-contain p-1 border border-slate-600 rounded-lg"
+                  className="w-auto h-16 object-cover scale-105"
                 />
               </Link>
               <p className="text-gray-400 text-sm mb-5">
@@ -943,7 +947,7 @@ const HomePage = () => {
                   </svg>
                 </a>
                 <a
-                  href="https://wa.me/5218441234567"
+                  href={`https://wa.me/${WHATSAPP_PHONE}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-slate-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -1031,7 +1035,7 @@ const HomePage = () => {
 
       {/* Floating WhatsApp Button with glow animation */}
       <a
-        href="https://wa.me/5218441234567?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico."
+        href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 group animate-bounce-slow animate-glow-pulse"
