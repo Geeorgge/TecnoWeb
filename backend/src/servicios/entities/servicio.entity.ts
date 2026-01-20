@@ -61,7 +61,7 @@ export class Servicio {
   @Column({ type: 'text' })
   problema: string;
 
-  @Column({ type: 'datetime', nullable: true, name: 'fecha_preferida' })
+  @Column({ type: 'timestamp', nullable: true, name: 'fecha_preferida' })
   fechaPreferida: Date;
 
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'ubicacion_servicio' })
