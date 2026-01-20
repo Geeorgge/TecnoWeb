@@ -24,6 +24,7 @@ frontend/.env
 **/google-credentials.json
 **/service-account.json
 **/*-credentials.json
+**/techno-hogar-notifications*.json
 
 # Database files
 *.sqlite
