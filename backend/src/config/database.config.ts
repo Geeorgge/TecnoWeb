@@ -16,7 +16,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         type: 'postgres',
         url: databaseUrl,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: this.configService.get<string>('NODE_ENV') !== 'production',
+        synchronize: true, // TODO: Use migrations in production instead
         logging: this.configService.get<string>('NODE_ENV') === 'development',
         ssl: {
           rejectUnauthorized: false,
