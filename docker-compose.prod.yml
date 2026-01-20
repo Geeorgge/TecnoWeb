@@ -1,16 +1,26 @@
+# Docker Compose for Production
+# Usage: docker-compose -f docker-compose.prod.yml up -d
+#
+# REQUIRED environment variables (create a .env file or export them):
+# - JWT_SECRET: Strong secret key for JWT tokens
+# - ADMIN_USERNAME: Admin login username
+# - ADMIN_PASSWORD: Strong admin password
+# - DB_PASSWORD: Database password
+# - MYSQL_ROOT_PASSWORD: MySQL root password
+# - CORS_ORIGIN: Frontend URL (e.g., https://tecnohogar.com)
+# - VITE_API_URL: Backend API URL (e.g., https://api.tecnohogar.com/api)
+
 services:
   # Base de datos MySQL
   mysql:
     image: mysql:8.0
     container_name: techno-hogar-db
-    restart: unless-stopped
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE:-techno_hogar}
       MYSQL_USER: ${DB_USERNAME:-techno_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-techno_password}
-    ports:
-      - "3306:3306"
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -25,32 +35,29 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: techno-hogar-backend
-    restart: unless-stopped
+    restart: always
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
+      NODE_ENV: production
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USERNAME: ${DB_USERNAME:-techno_user}
-      DB_PASSWORD: ${DB_PASSWORD:-techno_password}
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE:-techno_hogar}
       PORT: 3000
-      # Auth - REQUIRED in production
+      # Auth - REQUIRED
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_USERNAME: ${ADMIN_USERNAME}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-      # CORS - Set to your frontend URL in production
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      # CORS - REQUIRED
+      CORS_ORIGIN: ${CORS_ORIGIN}
       # Optional services
       WHATSAPP_NOTIFICATIONS_ENABLED: ${WHATSAPP_NOTIFICATIONS_ENABLED:-false}
       WHATSAPP_ADMIN_PHONE: ${WHATSAPP_ADMIN_PHONE:-}
       GOOGLE_SHEETS_ENABLED: ${GOOGLE_SHEETS_ENABLED:-false}
     ports:
       - "3000:3000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -61,29 +68,24 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    command: npm run start:dev
 
-  # Frontend React
+  # Frontend React (served by nginx)
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_WHATSAPP_PHONE: ${VITE_WHATSAPP_PHONE:-5218441972327}
+        VITE_PHONE_NUMBER: ${VITE_PHONE_NUMBER:-5218444180769}
     container_name: techno-hogar-frontend
-    restart: unless-stopped
-    environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
-      VITE_WHATSAPP_PHONE: ${VITE_WHATSAPP_PHONE:-5218441972327}
-      VITE_PHONE_NUMBER: ${VITE_PHONE_NUMBER:-5218444180769}
+    restart: always
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "80:80"
     depends_on:
       - backend
     networks:
       - techno-network
-    command: npm run dev -- --host
 
 volumes:
   mysql_data:
