@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SolicitudServicioForm from '../components/SolicitudServicioForm'
 
+// Contact configuration from environment
+const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
+const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
+
 const SolicitudServicioPage = () => {
   const [showSuccess, setShowSuccess] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -33,11 +37,11 @@ const SolicitudServicioPage = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo - ajustado para logo vertical */}
-            <Link to="/" className="flex items-center group">
+            <Link to="/" className="flex items-center group overflow-hidden rounded-lg border border-gray-200 shadow-sm">
               <img
                 src="/logo.png"
                 alt="Tecno Hogar Logo"
-                className="w-auto h-12 md:h-14 object-contain p-1 border border-gray-200 rounded-lg shadow-sm"
+                className="w-auto h-12 md:h-14 object-cover scale-105"
               />
             </Link>
 
@@ -217,7 +221,7 @@ const SolicitudServicioPage = () => {
             {/* Contact options */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://wa.me/5218441234567?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico."
+                href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-green-600 px-8 py-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl hover:scale-105"
@@ -228,7 +232,7 @@ const SolicitudServicioPage = () => {
                 WhatsApp
               </a>
               <a
-                href="tel:+5218441234567"
+                href={`tel:+${PHONE_NUMBER}`}
                 className="inline-flex items-center justify-center bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-4 rounded-lg font-semibold transition-all border-2 border-white/30 hover:scale-105"
               >
                 <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,11 +279,11 @@ const SolicitudServicioPage = () => {
           <div className="grid md:grid-cols-4 gap-10">
             {/* Logo & Description */}
             <div>
-              <Link to="/" className="inline-block mb-4">
+              <Link to="/" className="inline-block mb-4 overflow-hidden rounded-lg border border-slate-600">
                 <img
                   src="/logo-footer.png"
                   alt="Tecno Hogar Logo"
-                  className="w-auto h-16 object-contain p-1 border border-slate-600 rounded-lg"
+                  className="w-auto h-16 object-cover scale-105"
                 />
               </Link>
               <p className="text-gray-400 text-sm mb-5">
@@ -298,7 +302,7 @@ const SolicitudServicioPage = () => {
                   </svg>
                 </a>
                 <a
-                  href="https://wa.me/5218441234567"
+                  href={`https://wa.me/${WHATSAPP_PHONE}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-slate-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -386,7 +390,7 @@ const SolicitudServicioPage = () => {
 
       {/* Floating WhatsApp Button with glow animation */}
       <a
-        href="https://wa.me/5218441234567?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico."
+        href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 group animate-bounce-slow animate-glow-pulse"

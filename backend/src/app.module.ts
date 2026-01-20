@@ -8,6 +8,7 @@ import { DatabaseConfig } from './config/database.config';
 import { ClientesModule } from './clientes/clientes.module';
 import { ServiciosModule } from './servicios/servicios.module';
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,9 @@ import { CommonModule } from './common/common.module';
 
     // Common modules
     CommonModule,
+
+    // Authentication module
+    AuthModule,
 
     // Application modules
     ClientesModule,

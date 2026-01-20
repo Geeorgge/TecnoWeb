@@ -41,7 +41,7 @@ async function testTwilio() {
 
   if (!YOUR_WHATSAPP_NUMBER) {
     console.error('❌ ERROR: WHATSAPP_ADMIN_PHONE no está configurado en .env\n');
-    console.log('Debe ser algo como: whatsapp:+5218441972327\n');
+    console.log('Debe ser algo como: whatsapp:+521XXXXXXXXXX\n');
     return;
   }
 

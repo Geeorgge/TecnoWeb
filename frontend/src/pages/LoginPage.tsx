@@ -10,14 +10,13 @@ const LoginPage = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    // Simular delay de red
-    setTimeout(() => {
-      const success = login(username, password)
+    try {
+      const success = await login(username, password)
 
       if (success) {
         navigate('/admin-main')
@@ -25,8 +24,12 @@ const LoginPage = () => {
         setError('Usuario o contraseña incorrectos')
         setPassword('')
       }
+    } catch {
+      setError('Error de conexión. Intente nuevamente.')
+      setPassword('')
+    } finally {
       setLoading(false)
-    }, 500)
+    }
   }
 
   return (
@@ -135,14 +138,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Credenciales de prueba (puedes quitar esto en producción) */}
-          <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl">
-            <p className="text-sm text-gray-600 text-center font-semibold mb-2">📝 Credenciales de acceso:</p>
-            <div className="space-y-1 text-sm text-gray-700 text-center">
-              <p><span className="font-bold">Usuario:</span> admin</p>
-              <p><span className="font-bold">Contraseña:</span> techno2024</p>
-            </div>
-          </div>
         </div>
 
         {/* Link de regreso */}

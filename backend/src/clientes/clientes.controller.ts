@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientesService } from './clientes.service';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('clientes')
 export class ClientesController {
@@ -22,21 +24,25 @@ export class ClientesController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll(@Query('search') search?: string) {
     return this.clientesService.findAll(search);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.clientesService.findOne(+id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateClienteDto: UpdateClienteDto) {
     return this.clientesService.update(+id, updateClienteDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.clientesService.remove(+id);
   }
