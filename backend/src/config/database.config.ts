@@ -7,6 +7,24 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
+    // Check if using Render's DATABASE_URL (PostgreSQL)
+    const databaseUrl = this.configService.get<string>('DATABASE_URL');
+
+    if (databaseUrl) {
+      // PostgreSQL configuration for Render
+      return {
+        type: 'postgres',
+        url: databaseUrl,
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        synchronize: this.configService.get<string>('NODE_ENV') !== 'production',
+        logging: this.configService.get<string>('NODE_ENV') === 'development',
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      };
+    }
+
+    // MySQL configuration for local development
     return {
       type: 'mysql',
       host: this.configService.get<string>('DB_HOST'),
