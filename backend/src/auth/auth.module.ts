@@ -12,12 +12,18 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'techno-hogar-secret-key-change-in-production',
-        signOptions: {
-          expiresIn: '8h',
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error('JWT_SECRET must be set in environment variables');
+        }
+        return {
+          secret,
+          signOptions: {
+            expiresIn: '8h',
+          },
+        };
+      },
       inject: [ConfigService],
     }),
   ],

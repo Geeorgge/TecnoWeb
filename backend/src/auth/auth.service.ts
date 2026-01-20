@@ -28,9 +28,14 @@ export class AuthService {
   private initializeAdminUsers(): Map<string, AdminUser> {
     const users = new Map<string, AdminUser>();
 
-    // Get admin credentials from environment
-    const adminUsername = this.configService.get<string>('ADMIN_USERNAME') || 'admin';
-    const adminPassword = this.configService.get<string>('ADMIN_PASSWORD') || 'techno2024';
+    // Get admin credentials from environment - REQUIRED in production
+    const adminUsername = this.configService.get<string>('ADMIN_USERNAME');
+    const adminPassword = this.configService.get<string>('ADMIN_PASSWORD');
+
+    if (!adminUsername || !adminPassword) {
+      this.logger.error('ADMIN_USERNAME and ADMIN_PASSWORD must be set in environment variables');
+      throw new Error('Missing required admin credentials in environment');
+    }
 
     // Hash the password (sync for initialization)
     const passwordHash = bcrypt.hashSync(adminPassword, 10);
