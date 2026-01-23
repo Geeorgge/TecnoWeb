@@ -26,7 +26,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('techno_admin_token')
       localStorage.removeItem('techno_admin_auth')
-      window.location.href = '/admin'
+      // Only redirect if we're on an admin page (not during initial load)
+      if (window.location.pathname.startsWith('/admin-main')) {
+        window.location.href = '/admin-login'
+      }
     }
     return Promise.reject(error)
   }
