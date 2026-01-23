@@ -202,7 +202,11 @@ export class WhatsAppService {
       this.logger.log('Message sent via Twilio:', response.data.sid);
       return true;
     } catch (error) {
-      this.logger.error('Error sending message via Twilio', error.message);
+      this.logger.error('Error sending message via Twilio');
+      this.logger.error(error.message);
+      if (error.response?.data) {
+        this.logger.error('Twilio error details: ' + JSON.stringify(error.response.data));
+      }
       return false;
     }
   }
