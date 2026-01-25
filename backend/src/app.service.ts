@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHello(): object {
     return {
-      message: 'Bienvenido a Techno Hogar API',
+      message: 'Bienvenido a Tecno Hogar API',
       version: '1.0.0',
       endpoints: {
         clientes: '/api/clientes',

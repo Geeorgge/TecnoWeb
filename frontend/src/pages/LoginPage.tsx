@@ -48,7 +48,7 @@ const LoginPage = () => {
               <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
             </svg>
           </div>
-          <h1 className="text-4xl font-black text-white mb-2">Techno Hogar</h1>
+          <h1 className="text-4xl font-black text-white mb-2">Tecno Hogar</h1>
           <p className="text-cyan-200 text-lg font-semibold">Panel de Administración</p>
         </div>
 

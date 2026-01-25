@@ -31,7 +31,7 @@ export class GoogleSheetsService {
     } catch (error) {
       this.logger.error(
         'Error initializing Google Sheets API',
-        error.message,
+        error instanceof Error ? error.message : 'Unknown error',
       );
     }
   }
@@ -97,7 +97,7 @@ export class GoogleSheetsService {
         `Row added successfully to Google Sheets for ${data.cliente}`,
       );
     } catch (error) {
-      this.logger.error('Error adding row to Google Sheets', error.message);
+      this.logger.error('Error adding row to Google Sheets', error instanceof Error ? error.message : 'Unknown error');
       throw error;
     }
   }
@@ -261,7 +261,7 @@ export class GoogleSheetsService {
     } catch (error) {
       this.logger.error(
         'Error creating headers in Google Sheets',
-        error.message,
+        error instanceof Error ? error.message : 'Unknown error',
       );
     }
   }

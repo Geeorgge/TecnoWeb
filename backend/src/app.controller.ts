@@ -19,7 +19,7 @@ export class AppController {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      service: 'Techno Hogar API',
+      service: 'Tecno Hogar API',
       version: '1.0.0',
       environment: process.env.NODE_ENV || 'development',
       uptime: process.uptime(),
@@ -38,7 +38,7 @@ export class AppController {
       return {
         success: false,
         message: 'Error al formatear Google Sheets',
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }

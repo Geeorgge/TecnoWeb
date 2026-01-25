@@ -19,6 +19,7 @@ const SolicitudServicioForm = ({ onSuccess }: Props) => {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<FormData>({
     defaultValues: {
       urgencia: Urgencia.MEDIA,
@@ -540,11 +541,12 @@ const SolicitudServicioForm = ({ onSuccess }: Props) => {
                   <button
                     key={ciudad}
                     type="button"
-                    onClick={() => {
-                      const input = document.querySelector('input[name="ubicacionServicio"]') as HTMLInputElement
-                      if (input) input.value = ciudad
-                    }}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 transition-all text-sm font-medium text-gray-600 hover:text-cyan-600"
+                    onClick={() => setValue('ubicacionServicio', ciudad)}
+                    className={`px-4 py-2 border-2 rounded-lg transition-all text-sm font-medium ${
+                      watchedFields.ubicacionServicio === ciudad
+                        ? 'border-cyan-500 bg-cyan-50 text-cyan-600'
+                        : 'border-gray-200 hover:border-cyan-500 hover:bg-cyan-50 text-gray-600 hover:text-cyan-600'
+                    }`}
                   >
                     {ciudad}
                   </button>
