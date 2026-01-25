@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import AnimatedSection from '../components/AnimatedSection'
 
 // Contact configuration from environment
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
@@ -231,19 +232,22 @@ const HomePage = () => {
       <section id="servicios" className="py-20 bg-gradient-to-b from-white to-cyan-50/30">
         <div className="container mx-auto px-6">
           {/* Section header */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Nuestros Servicios de Reparación
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Reparamos todas las marcas y modelos de electrodomésticos con garantía profesional
-            </p>
-          </div>
+          <AnimatedSection animation="fadeIn">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                Nuestros Servicios de Reparación
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Reparamos todas las marcas y modelos de electrodomésticos con garantía profesional
+              </p>
+            </div>
+          </AnimatedSection>
 
           {/* Service cards */}
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             {/* Lavadoras */}
-            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group">
+            <AnimatedSection animation="slideUp" delay={100}>
+              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group card-glow h-full">
               <div className="w-14 h-14 bg-cyan-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {/* Icono de lavadora */}
                 <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -286,10 +290,12 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
-            </div>
+              </div>
+            </AnimatedSection>
 
             {/* Refrigeradores */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group">
+            <AnimatedSection animation="slideUp" delay={200}>
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group card-glow h-full">
               <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {/* Icono de copo de nieve */}
                 <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -332,10 +338,12 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
-            </div>
+              </div>
+            </AnimatedSection>
 
             {/* Secadoras */}
-            <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group">
+            <AnimatedSection animation="slideUp" delay={300}>
+              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 group card-glow h-full">
               <div className="w-14 h-14 bg-teal-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {/* Icono de viento/aire caliente */}
                 <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -378,7 +386,8 @@ const HomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
-            </div>
+              </div>
+            </AnimatedSection>
           </div>
 
           {/* View all services button */}

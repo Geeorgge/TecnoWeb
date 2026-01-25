@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { serviciosApi } from '../services/api'
 import { Servicio, EstadoServicio, Urgencia } from '../types'
 import { useAuth } from '../contexts/AuthContext'
+import { TableRowSkeleton } from '../components/Skeleton'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminPage = () => {
   const { logout } = useAuth()
@@ -14,6 +17,10 @@ const AdminPage = () => {
   const [selectedServicio, setSelectedServicio] = useState<Servicio | null>(null)
   const [showModal, setShowModal] = useState(false)
 
+  // Search and pagination
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
   // Estados para edición
   const [editEstado, setEditEstado] = useState<EstadoServicio>(EstadoServicio.PENDIENTE)
   const [editNotas, setEditNotas] = useState('')
@@ -23,6 +30,11 @@ const AdminPage = () => {
   useEffect(() => {
     fetchServicios()
   }, [filtroEstado])
+
+  // Reset page when search or filter changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, filtroEstado])
 
   const fetchServicios = async () => {
     try {
@@ -73,6 +85,26 @@ const AdminPage = () => {
     enProceso: servicios.filter(s => s.estado === EstadoServicio.EN_PROCESO).length,
     completados: servicios.filter(s => s.estado === EstadoServicio.COMPLETADO).length,
   }
+
+  // Filtered and paginated data
+  const filteredServicios = useMemo(() => {
+    if (!searchTerm.trim()) return servicios
+
+    const term = searchTerm.toLowerCase()
+    return servicios.filter(s =>
+      s.cliente?.nombre?.toLowerCase().includes(term) ||
+      s.cliente?.telefono?.includes(term) ||
+      s.problema?.toLowerCase().includes(term) ||
+      s.tipoElectrodomestico?.toLowerCase().includes(term) ||
+      s.marca?.toLowerCase().includes(term)
+    )
+  }, [servicios, searchTerm])
+
+  const totalPages = Math.ceil(filteredServicios.length / ITEMS_PER_PAGE)
+  const paginatedServicios = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredServicios.slice(start, start + ITEMS_PER_PAGE)
+  }, [filteredServicios, currentPage])
 
   const getEstadoBadge = (estado: EstadoServicio) => {
     const badges = {
@@ -170,9 +202,36 @@ const AdminPage = () => {
           </div>
         </div>
 
-        {/* Filtros */}
+        {/* Búsqueda y Filtros */}
         <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Filtrar por Estado</h3>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+            <h3 className="text-xl font-bold text-gray-800">Filtrar Servicios</h3>
+            {/* Search Input */}
+            <div className="relative w-full lg:w-80">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar por cliente, teléfono, problema..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-cyan-100 focus:border-cyan-500 transition-all"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setFiltroEstado('todos')}
@@ -246,25 +305,28 @@ const AdminPage = () => {
               </thead>
               <tbody>
                 {loading ? (
+                  <>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <TableRowSkeleton key={i} />
+                    ))}
+                  </>
+                ) : paginatedServicios.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
-                      <div className="flex items-center justify-center">
-                        <svg className="animate-spin h-8 w-8 text-cyan-600" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span className="ml-3">Cargando servicios...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : servicios.length === 0 ? (
-                  <tr>
-                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
-                      No hay servicios registrados
+                      {searchTerm ? (
+                        <div className="flex flex-col items-center">
+                          <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                          <span>No se encontraron resultados para "{searchTerm}"</span>
+                        </div>
+                      ) : (
+                        'No hay servicios registrados'
+                      )}
                     </td>
                   </tr>
                 ) : (
-                  servicios.map((servicio) => (
+                  paginatedServicios.map((servicio) => (
                     <tr key={servicio.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 font-bold text-gray-900">#{servicio.id}</td>
                       <td className="px-6 py-4 text-gray-900">{servicio.cliente?.nombre || 'N/A'}</td>
@@ -301,6 +363,62 @@ const AdminPage = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          {!loading && totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm text-gray-600">
+                Mostrando {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, filteredServicios.length)} de {filteredServicios.length} servicios
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-700"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum: number
+                  if (totalPages <= 5) {
+                    pageNum = i + 1
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i
+                  } else {
+                    pageNum = currentPage - 2 + i
+                  }
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-10 h-10 rounded-lg font-bold transition-all ${
+                        currentPage === pageNum
+                          ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg'
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  )
+                })}
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-700"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

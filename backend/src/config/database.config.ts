@@ -12,12 +12,14 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
 
     if (databaseUrl) {
       // PostgreSQL configuration for Render
+      const isDevMode = this.configService.get<string>('NODE_ENV') === 'development';
       return {
         type: 'postgres',
         url: databaseUrl,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true, // TODO: Use migrations in production instead
-        logging: this.configService.get<string>('NODE_ENV') === 'development',
+        // Only synchronize in development - use migrations in production
+        synchronize: isDevMode,
+        logging: isDevMode,
         ssl: {
           rejectUnauthorized: false,
         },

@@ -1,18 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 
+interface WhatsAppNotificationData {
+  servicioId?: number;
+  cliente: string;
+  telefono: string;
+  email?: string;
+  tipoElectrodomestico: string;
+  marca?: string;
+  modelo?: string;
+  problema: string;
+  urgencia: string;
+  ubicacionServicio?: string;
+  direccion?: string;
+  fechaPreferida?: string | Date;
+}
+
 @Injectable()
 export class WhatsAppService {
   private readonly logger = new Logger(WhatsAppService.name);
 
-  async sendNotification(data: {
-    cliente: string;
-    telefono: string;
-    tipoElectrodomestico: string;
-    problema: string;
-    urgencia: string;
-    ubicacionServicio?: string;
-  }): Promise<void> {
+  async sendNotification(data: WhatsAppNotificationData): Promise<void> {
     if (process.env.WHATSAPP_NOTIFICATIONS_ENABLED !== 'true') {
       this.logger.warn('WhatsApp notifications are disabled');
       return;
@@ -46,11 +54,11 @@ export class WhatsAppService {
       this.logger.log(`WhatsApp notification sent via CallMeBot for ${data.cliente}`);
     } catch (error) {
       this.logger.error('Error sending WhatsApp via CallMeBot');
-      this.logger.error(error.message);
+      this.logger.error(error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
-  private formatMessage(data: any): string {
+  private formatMessage(data: WhatsAppNotificationData): string {
     const now = new Date();
     const fechaHora = now.toLocaleString('es-MX', {
       timeZone: 'America/Mexico_City',
@@ -68,7 +76,7 @@ export class WhatsAppService {
           ? '⚡'
           : '📌';
 
-    let mensaje = `🔔 *Nueva Solicitud de Servicio - Techno Hogar*\n\n`;
+    let mensaje = `🔔 *Nueva Solicitud de Servicio - Tecno Hogar*\n\n`;
 
     if (data.servicioId) {
       mensaje += `📋 *Servicio #${data.servicioId}*\n`;
