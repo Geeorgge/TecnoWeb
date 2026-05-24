@@ -1,130 +1,14 @@
-import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { serviciosApi } from '../services/api'
-import { Servicio, EstadoServicio, Urgencia } from '../types'
 import { useAuth } from '../contexts/AuthContext'
-import { TableRowSkeleton } from '../components/Skeleton'
+import { logContact } from '../services/contactLogger'
 
-const ITEMS_PER_PAGE = 10
+const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
+const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
+const GOOGLE_SHEETS_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL || 'https://docs.google.com/spreadsheets'
 
 const AdminPage = () => {
   const { logout } = useAuth()
   const navigate = useNavigate()
-
-  const [servicios, setServicios] = useState<Servicio[]>([])
-  const [filtroEstado, setFiltroEstado] = useState<EstadoServicio | 'todos'>('todos')
-  const [loading, setLoading] = useState(true)
-  const [selectedServicio, setSelectedServicio] = useState<Servicio | null>(null)
-  const [showModal, setShowModal] = useState(false)
-
-  // Search and pagination
-  const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-
-  // Estados para edición
-  const [editEstado, setEditEstado] = useState<EstadoServicio>(EstadoServicio.PENDIENTE)
-  const [editNotas, setEditNotas] = useState('')
-  const [editCostoEstimado, setEditCostoEstimado] = useState('')
-  const [editCostoFinal, setEditCostoFinal] = useState('')
-
-  useEffect(() => {
-    fetchServicios()
-  }, [filtroEstado])
-
-  // Reset page when search or filter changes
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [searchTerm, filtroEstado])
-
-  const fetchServicios = async () => {
-    try {
-      setLoading(true)
-      const params = filtroEstado !== 'todos' ? filtroEstado : undefined
-      const data = await serviciosApi.findAll(params)
-      setServicios(data)
-    } catch (error) {
-      console.error('Error al cargar servicios:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleOpenModal = (servicio: Servicio) => {
-    setSelectedServicio(servicio)
-    setEditEstado(servicio.estado)
-    setEditNotas(servicio.notasTecnico || '')
-    setEditCostoEstimado(servicio.costoEstimado?.toString() || '')
-    setEditCostoFinal(servicio.costoFinal?.toString() || '')
-    setShowModal(true)
-  }
-
-  const handleUpdateServicio = async () => {
-    if (!selectedServicio) return
-
-    try {
-      await serviciosApi.update(selectedServicio.id, {
-        estado: editEstado,
-        notasTecnico: editNotas || undefined,
-        costoEstimado: editCostoEstimado ? parseFloat(editCostoEstimado) : undefined,
-        costoFinal: editCostoFinal ? parseFloat(editCostoFinal) : undefined,
-      })
-
-      setShowModal(false)
-      fetchServicios()
-    } catch (error) {
-      console.error('Error al actualizar servicio:', error)
-      alert('Error al actualizar el servicio')
-    }
-  }
-
-  // Estadísticas
-  const stats = {
-    total: servicios.length,
-    pendientes: servicios.filter(s => s.estado === EstadoServicio.PENDIENTE).length,
-    programados: servicios.filter(s => s.estado === EstadoServicio.PROGRAMADO).length,
-    enProceso: servicios.filter(s => s.estado === EstadoServicio.EN_PROCESO).length,
-    completados: servicios.filter(s => s.estado === EstadoServicio.COMPLETADO).length,
-  }
-
-  // Filtered and paginated data
-  const filteredServicios = useMemo(() => {
-    if (!searchTerm.trim()) return servicios
-
-    const term = searchTerm.toLowerCase()
-    return servicios.filter(s =>
-      s.cliente?.nombre?.toLowerCase().includes(term) ||
-      s.cliente?.telefono?.includes(term) ||
-      s.problema?.toLowerCase().includes(term) ||
-      s.tipoElectrodomestico?.toLowerCase().includes(term) ||
-      s.marca?.toLowerCase().includes(term)
-    )
-  }, [servicios, searchTerm])
-
-  const totalPages = Math.ceil(filteredServicios.length / ITEMS_PER_PAGE)
-  const paginatedServicios = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE
-    return filteredServicios.slice(start, start + ITEMS_PER_PAGE)
-  }, [filteredServicios, currentPage])
-
-  const getEstadoBadge = (estado: EstadoServicio) => {
-    const badges = {
-      [EstadoServicio.PENDIENTE]: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      [EstadoServicio.PROGRAMADO]: 'bg-blue-100 text-blue-800 border-blue-300',
-      [EstadoServicio.EN_PROCESO]: 'bg-purple-100 text-purple-800 border-purple-300',
-      [EstadoServicio.COMPLETADO]: 'bg-green-100 text-green-800 border-green-300',
-      [EstadoServicio.CANCELADO]: 'bg-red-100 text-red-800 border-red-300',
-    }
-    return badges[estado]
-  }
-
-  const getUrgenciaBadge = (urgencia: Urgencia) => {
-    const badges = {
-      [Urgencia.BAJA]: 'bg-gray-100 text-gray-800',
-      [Urgencia.MEDIA]: 'bg-orange-100 text-orange-800',
-      [Urgencia.ALTA]: 'bg-red-100 text-red-800',
-    }
-    return badges[urgencia]
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-blue-900">
@@ -140,7 +24,7 @@ const AdminPage = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-black">Panel de Administración</h1>
-                <p className="text-cyan-100">Gestión de Servicios Técnicos</p>
+                <p className="text-cyan-100">Tecno Hogar</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -167,425 +51,75 @@ const AdminPage = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-10">
-        {/* Dashboard - Estadísticas */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-10">
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 mb-2">
-              {stats.total}
-            </div>
-            <div className="text-gray-600 font-semibold">Total</div>
+      <div className="container mx-auto px-6 py-10 max-w-2xl">
+
+        {/* Google Sheets Card */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-6">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+              <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.9 3H4.1C3.5 3 3 3.5 3 4.1v15.8C3 20.5 3.5 21 4.1 21h15.8c.6 0 1.1-.5 1.1-1.1V4.1C21 3.5 20.5 3 19.9 3zm-9.4 14H7v-2.5h3.5V17zm0-4H7v-2.5h3.5V13zm0-4H7V6.5h3.5V9zm6.5 8H12v-2.5H17V17zm0-4H12v-2.5H17V13zm0-4H12V6.5H17V9z"/>
+              </svg>
+              Solicitudes en Google Sheets
+            </h2>
+            <p className="text-green-100 mt-1">Todas las solicitudes de servicio se registran aquí</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <div className="text-3xl font-black text-yellow-600 mb-2">
-              {stats.pendientes}
-            </div>
-            <div className="text-gray-600 font-semibold">Pendientes</div>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <div className="text-3xl font-black text-blue-600 mb-2">
-              {stats.programados}
-            </div>
-            <div className="text-gray-600 font-semibold">Programados</div>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <div className="text-3xl font-black text-purple-600 mb-2">
-              {stats.enProceso}
-            </div>
-            <div className="text-gray-600 font-semibold">En Proceso</div>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <div className="text-3xl font-black text-green-600 mb-2">
-              {stats.completados}
-            </div>
-            <div className="text-gray-600 font-semibold">Completados</div>
+          <div className="p-8 space-y-4">
+            <p className="text-gray-600">
+              El historial completo de solicitudes, incluyendo datos del cliente, electrodoméstico y estado, está disponible en Google Sheets.
+            </p>
+            <a
+              href={GOOGLE_SHEETS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] text-lg"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.9 3H4.1C3.5 3 3 3.5 3 4.1v15.8C3 20.5 3.5 21 4.1 21h15.8c.6 0 1.1-.5 1.1-1.1V4.1C21 3.5 20.5 3 19.9 3zm-9.4 14H7v-2.5h3.5V17zm0-4H7v-2.5h3.5V13zm0-4H7V6.5h3.5V9zm6.5 8H12v-2.5H17V17zm0-4H12v-2.5H17V13zm0-4H12V6.5H17V9z"/>
+              </svg>
+              Abrir Google Sheets
+            </a>
           </div>
         </div>
 
-        {/* Búsqueda y Filtros */}
-        <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-            <h3 className="text-xl font-bold text-gray-800">Filtrar Servicios</h3>
-            {/* Search Input */}
-            <div className="relative w-full lg:w-80">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar por cliente, teléfono, problema..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-cyan-100 focus:border-cyan-500 transition-all"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-4">
+          <a
+            href={`https://wa.me/${WHATSAPP_PHONE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => logContact('WhatsApp', 'Admin')}
+            className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center gap-3 hover:shadow-xl transition-all hover:scale-[1.02]"
+          >
+            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
             </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setFiltroEstado('todos')}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
-                filtroEstado === 'todos'
-                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Todos
-            </button>
-            <button
-              onClick={() => setFiltroEstado(EstadoServicio.PENDIENTE)}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
-                filtroEstado === EstadoServicio.PENDIENTE
-                  ? 'bg-yellow-500 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Pendientes
-            </button>
-            <button
-              onClick={() => setFiltroEstado(EstadoServicio.PROGRAMADO)}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
-                filtroEstado === EstadoServicio.PROGRAMADO
-                  ? 'bg-blue-500 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Programados
-            </button>
-            <button
-              onClick={() => setFiltroEstado(EstadoServicio.EN_PROCESO)}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
-                filtroEstado === EstadoServicio.EN_PROCESO
-                  ? 'bg-purple-500 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              En Proceso
-            </button>
-            <button
-              onClick={() => setFiltroEstado(EstadoServicio.COMPLETADO)}
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all ${
-                filtroEstado === EstadoServicio.COMPLETADO
-                  ? 'bg-green-500 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Completados
-            </button>
-          </div>
+            <div className="text-center">
+              <p className="font-bold text-gray-800">WhatsApp</p>
+              <p className="text-sm text-gray-500">Ver conversaciones</p>
+            </div>
+          </a>
+
+          <a
+            href={`tel:+${PHONE_NUMBER}`}
+            onClick={() => logContact('Llamar', 'Admin')}
+            className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center gap-3 hover:shadow-xl transition-all hover:scale-[1.02]"
+          >
+            <div className="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <div className="text-center">
+              <p className="font-bold text-gray-800">Teléfono</p>
+              <p className="text-sm text-gray-500">Llamar al negocio</p>
+            </div>
+          </a>
         </div>
 
-        {/* Tabla de Servicios */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
-                <tr>
-                  <th className="px-6 py-4 text-left font-bold">ID</th>
-                  <th className="px-6 py-4 text-left font-bold">Cliente</th>
-                  <th className="px-6 py-4 text-left font-bold">Teléfono</th>
-                  <th className="px-6 py-4 text-left font-bold">Electrodoméstico</th>
-                  <th className="px-6 py-4 text-left font-bold">Problema</th>
-                  <th className="px-6 py-4 text-left font-bold">Urgencia</th>
-                  <th className="px-6 py-4 text-left font-bold">Estado</th>
-                  <th className="px-6 py-4 text-left font-bold">Fecha</th>
-                  <th className="px-6 py-4 text-left font-bold">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <>
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <TableRowSkeleton key={i} />
-                    ))}
-                  </>
-                ) : paginatedServicios.length === 0 ? (
-                  <tr>
-                    <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
-                      {searchTerm ? (
-                        <div className="flex flex-col items-center">
-                          <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                          </svg>
-                          <span>No se encontraron resultados para "{searchTerm}"</span>
-                        </div>
-                      ) : (
-                        'No hay servicios registrados'
-                      )}
-                    </td>
-                  </tr>
-                ) : (
-                  paginatedServicios.map((servicio) => (
-                    <tr key={servicio.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-gray-900">#{servicio.id}</td>
-                      <td className="px-6 py-4 text-gray-900">{servicio.cliente?.nombre || 'N/A'}</td>
-                      <td className="px-6 py-4 text-gray-700">{servicio.cliente?.telefono || 'N/A'}</td>
-                      <td className="px-6 py-4">
-                        <div className="text-gray-900 font-semibold capitalize">{servicio.tipoElectrodomestico}</div>
-                        {servicio.marca && <div className="text-sm text-gray-500">{servicio.marca}</div>}
-                      </td>
-                      <td className="px-6 py-4 text-gray-700 max-w-xs truncate">{servicio.problema}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${getUrgenciaBadge(servicio.urgencia)}`}>
-                          {servicio.urgencia}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase border-2 ${getEstadoBadge(servicio.estado)}`}>
-                          {servicio.estado.replace('_', ' ')}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(servicio.createdAt).toLocaleDateString('es-MX')}
-                      </td>
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => handleOpenModal(servicio)}
-                          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-bold text-sm transition-all"
-                        >
-                          Ver Detalle
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {!loading && totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-sm text-gray-600">
-                Mostrando {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, filteredServicios.length)} de {filteredServicios.length} servicios
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-700"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum: number
-                  if (totalPages <= 5) {
-                    pageNum = i + 1
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i
-                  } else {
-                    pageNum = currentPage - 2 + i
-                  }
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => setCurrentPage(pageNum)}
-                      className={`w-10 h-10 rounded-lg font-bold transition-all ${
-                        currentPage === pageNum
-                          ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg'
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  )
-                })}
-
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-700"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
-
-      {/* Modal de Detalle/Edición */}
-      {showModal && selectedServicio && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black">Detalle del Servicio #{selectedServicio.id}</h2>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-8 space-y-6">
-              {/* Información del Cliente */}
-              <div className="bg-gradient-to-r from-cyan-50 to-teal-50 rounded-2xl p-6 border-2 border-cyan-200">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Cliente
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Nombre</p>
-                    <p className="font-bold text-gray-900">{selectedServicio.cliente?.nombre}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Teléfono</p>
-                    <p className="font-bold text-gray-900">{selectedServicio.cliente?.telefono}</p>
-                  </div>
-                  {selectedServicio.cliente?.email && (
-                    <div>
-                      <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-bold text-gray-900">{selectedServicio.cliente.email}</p>
-                    </div>
-                  )}
-                  {selectedServicio.cliente?.direccion && (
-                    <div className="md:col-span-2">
-                      <p className="text-sm text-gray-600">Dirección</p>
-                      <p className="font-bold text-gray-900">{selectedServicio.cliente.direccion}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Información del Electrodoméstico */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-2 border-blue-200">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                  </svg>
-                  Electrodoméstico
-                </h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Tipo</p>
-                    <p className="font-bold text-gray-900 capitalize">{selectedServicio.tipoElectrodomestico}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Marca</p>
-                    <p className="font-bold text-gray-900">{selectedServicio.marca || 'No especificada'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Modelo</p>
-                    <p className="font-bold text-gray-900">{selectedServicio.modelo || 'No especificado'}</p>
-                  </div>
-                  <div className="md:col-span-3">
-                    <p className="text-sm text-gray-600">Problema Reportado</p>
-                    <p className="font-bold text-gray-900">{selectedServicio.problema}</p>
-                  </div>
-                  {selectedServicio.ubicacionServicio && (
-                    <div className="md:col-span-3">
-                      <p className="text-sm text-gray-600">Ubicación del Servicio</p>
-                      <p className="font-bold text-gray-900">{selectedServicio.ubicacionServicio}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Edición de Estado y Detalles */}
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border-2 border-purple-200">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Gestión del Servicio
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Estado</label>
-                    <select
-                      value={editEstado}
-                      onChange={(e) => setEditEstado(e.target.value as EstadoServicio)}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
-                    >
-                      <option value={EstadoServicio.PENDIENTE}>Pendiente</option>
-                      <option value={EstadoServicio.PROGRAMADO}>Programado</option>
-                      <option value={EstadoServicio.EN_PROCESO}>En Proceso</option>
-                      <option value={EstadoServicio.COMPLETADO}>Completado</option>
-                      <option value={EstadoServicio.CANCELADO}>Cancelado</option>
-                    </select>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Costo Estimado ($)</label>
-                      <input
-                        type="number"
-                        value={editCostoEstimado}
-                        onChange={(e) => setEditCostoEstimado(e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Costo Final ($)</label>
-                      <input
-                        type="number"
-                        value={editCostoFinal}
-                        onChange={(e) => setEditCostoFinal(e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Notas del Técnico</label>
-                    <textarea
-                      value={editNotas}
-                      onChange={(e) => setEditNotas(e.target.value)}
-                      rows={4}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
-                      placeholder="Escribe notas sobre el diagnóstico, reparación, piezas utilizadas, etc."
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Botones de Acción */}
-              <div className="flex gap-4">
-                <button
-                  onClick={handleUpdateServicio}
-                  className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl"
-                >
-                  Guardar Cambios
-                </button>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-8 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl transition-all"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import SolicitudServicioForm from '../components/SolicitudServicioForm'
+import { Link } from 'react-router-dom'
+import { logContact } from '../services/contactLogger'
 
 // Contact configuration from environment
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
 const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
 
 const SolicitudServicioPage = () => {
-  const [showSuccess, setShowSuccess] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,13 +18,6 @@ const SolicitudServicioPage = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const handleSuccess = () => {
-    setShowSuccess(true)
-    setTimeout(() => {
-      navigate('/')
-    }, 3000)
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -127,11 +118,11 @@ const SolicitudServicioPage = () => {
             </Link>
 
             {/* Badge */}
-            <div className="inline-flex items-center bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <div className="inline-flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
               </svg>
-              Formulario de Solicitud
+              Atención por WhatsApp
             </div>
 
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4">
@@ -140,7 +131,7 @@ const SolicitudServicioPage = () => {
             </h1>
 
             <p className="text-gray-600 text-lg mb-6 max-w-2xl mx-auto">
-              Complete el siguiente formulario y nos pondremos en contacto con usted en menos de 24 horas para agendar su diagnóstico.
+              Escríbenos por WhatsApp o llámanos directamente. Te respondemos en menos de 24 horas para agendar tu diagnóstico.
             </p>
 
             {/* Price info - Bigger box */}
@@ -168,37 +159,72 @@ const SolicitudServicioPage = () => {
         </div>
       </section>
 
-      {/* Form Section */}
+      {/* Contact Section */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            {showSuccess ? (
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-12 text-center animate-fadeIn">
-                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-bold text-green-700 mb-4">¡Solicitud Enviada!</h3>
-                <p className="text-lg text-green-600 mb-2">
-                  Gracias por confiar en Tecno Hogar. Nos pondremos en contacto con usted en menos de 24 horas.
-                </p>
-                <p className="text-sm text-green-500">Redirigiendo a la página principal...</p>
-              </div>
-            ) : (
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                {/* Form Header */}
-                <div className="bg-gradient-to-r from-cyan-500 to-cyan-600 px-8 py-6">
-                  <h2 className="text-2xl font-bold text-white">Complete sus datos</h2>
-                  <p className="text-cyan-100">Los campos marcados con * son obligatorios</p>
-                </div>
+          <div className="max-w-2xl mx-auto space-y-6">
 
-                {/* Form Content */}
-                <div className="p-8">
-                  <SolicitudServicioForm onSuccess={handleSuccess} />
-                </div>
+            {/* WhatsApp Card */}
+            <div className="bg-white rounded-2xl shadow-xl border-2 border-green-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-green-500 to-green-600 px-8 py-6">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  </svg>
+                  Contáctanos por WhatsApp
+                </h2>
+                <p className="text-green-100 mt-1">La forma más rápida de agendar tu servicio</p>
               </div>
-            )}
+              <div className="p-8 space-y-5">
+                <p className="text-gray-600">
+                  Escríbenos indicando:
+                </p>
+                <ul className="space-y-2 text-gray-700">
+                  {['Tu nombre y número de teléfono', 'Tipo de electrodoméstico y marca', 'Descripción del problema', 'Tu dirección (Saltillo, Arteaga o Ramos Arizpe)'].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => logContact('WhatsApp', 'Solicitar Servicio')}
+                  className="flex items-center justify-center gap-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] text-lg"
+                >
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  </svg>
+                  Abrir WhatsApp
+                </a>
+              </div>
+            </div>
+
+            {/* Phone Card */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex items-center gap-5">
+              <div className="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-gray-500 text-sm font-medium">¿Prefieres llamar?</p>
+                <p className="text-gray-900 font-bold text-lg">Llámanos directamente</p>
+                <p className="text-gray-500 text-sm">Lunes a Sábado · 9:00 AM – 5:00 PM</p>
+              </div>
+              <a
+                href={`tel:+${PHONE_NUMBER}`}
+                onClick={() => logContact('Llamar', 'Solicitar Servicio')}
+                className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-5 py-3 rounded-xl transition-all"
+              >
+                Llamar
+              </a>
+            </div>
+
           </div>
         </div>
       </section>
@@ -224,6 +250,7 @@ const SolicitudServicioPage = () => {
                 href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => logContact('WhatsApp', 'Solicitar Servicio')}
                 className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-green-600 px-8 py-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <svg className="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24">
@@ -233,6 +260,7 @@ const SolicitudServicioPage = () => {
               </a>
               <a
                 href={`tel:+${PHONE_NUMBER}`}
+                onClick={() => logContact('Llamar', 'Solicitar Servicio')}
                 className="inline-flex items-center justify-center bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-4 rounded-lg font-semibold transition-all border-2 border-white/30 hover:scale-105"
               >
                 <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,6 +421,7 @@ const SolicitudServicioPage = () => {
         href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => logContact('WhatsApp', 'Solicitar Servicio')}
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 group animate-bounce-slow animate-glow-pulse"
         aria-label="Contactar por WhatsApp"
       >
