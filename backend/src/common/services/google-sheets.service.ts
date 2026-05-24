@@ -102,6 +102,65 @@ export class GoogleSheetsService {
     }
   }
 
+  async appendContactLog(data: {
+    tipo: string;
+    pagina: string;
+    dispositivo: string;
+  }): Promise<void> {
+    if (process.env.GOOGLE_SHEETS_ENABLED !== 'true') return;
+
+    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
+    const sheetName = 'Contactos';
+    const now = new Date();
+    const values = [[
+      now.toLocaleDateString('es-MX'),
+      now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
+      data.tipo,
+      data.pagina,
+      data.dispositivo,
+    ]];
+
+    try {
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: `${sheetName}!A:E`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values },
+      });
+    } catch (error) {
+      // Sheet doesn't exist yet — create it with headers, then append
+      if (error instanceof Error && error.message?.includes('Unable to parse range')) {
+        await this.createContactsSheet(spreadsheetId, sheetName);
+        await this.sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: `${sheetName}!A:E`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: { values },
+        });
+      } else {
+        this.logger.error('Error logging contact', error instanceof Error ? error.message : 'Unknown error');
+      }
+    }
+  }
+
+  private async createContactsSheet(spreadsheetId: string, sheetName: string): Promise<void> {
+    await this.sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [{ addSheet: { properties: { title: sheetName } } }],
+      },
+    });
+    await this.sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${sheetName}!A1:E1`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [['Fecha', 'Hora', 'Tipo', 'Página', 'Dispositivo']],
+      },
+    });
+    this.logger.log('Contactos sheet created');
+  }
+
   async createHeaderRow(): Promise<void> {
     if (process.env.GOOGLE_SHEETS_ENABLED !== 'true') {
       return;

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import AnimatedSection from '../components/AnimatedSection'
+import { logContact } from '../services/contactLogger'
 
 // Contact configuration from environment
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
@@ -201,6 +202,7 @@ const HomePage = () => {
                   href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => logContact('WhatsApp', 'Inicio')}
                   className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 px-8 py-3.5 rounded-lg font-semibold border-2 border-gray-200 transition-all hover:border-green-500 hover:text-green-600"
                 >
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -677,6 +679,7 @@ const HomePage = () => {
                   href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Saltillo`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => logContact('WhatsApp', 'Inicio')}
                   className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -686,6 +689,7 @@ const HomePage = () => {
                 </a>
                 <a
                   href={`tel:+${PHONE_NUMBER}`}
+                  onClick={() => logContact('Llamar', 'Inicio')}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -747,6 +751,7 @@ const HomePage = () => {
                   href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20quiero%20agendar%20un%20diagnóstico%20en%20Arteaga%2FRamos%20Arizpe`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => logContact('WhatsApp', 'Inicio')}
                   className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -756,6 +761,7 @@ const HomePage = () => {
                 </a>
                 <a
                   href={`tel:+${PHONE_NUMBER}`}
+                  onClick={() => logContact('Llamar', 'Inicio')}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -854,6 +860,7 @@ const HomePage = () => {
                 href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20solicitar%20un%20servicio%20t%C3%A9cnico`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => logContact('WhatsApp', 'Inicio')}
                 className="inline-flex items-center justify-center bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-4 rounded-lg font-semibold transition-all border-2 border-white/30"
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -959,6 +966,7 @@ const HomePage = () => {
                   href={`https://wa.me/${WHATSAPP_PHONE}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => logContact('WhatsApp', 'Inicio')}
                   className="w-9 h-9 bg-slate-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -1047,6 +1055,7 @@ const HomePage = () => {
         href={`https://wa.me/${WHATSAPP_PHONE}?text=Hola%2C%20necesito%20un%20servicio%20t%C3%A9cnico.`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => logContact('WhatsApp', 'Inicio')}
         className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 group animate-bounce-slow animate-glow-pulse"
         aria-label="Contactar por WhatsApp"
       >

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { GoogleSheetsService } from './common/services/google-sheets.service';
 
@@ -24,6 +24,18 @@ export class AppController {
       environment: process.env.NODE_ENV || 'development',
       uptime: process.uptime(),
     };
+  }
+
+  @Post('log/contact')
+  async logContact(
+    @Body() body: { tipo: string; pagina: string; dispositivo: string },
+  ): Promise<object> {
+    try {
+      await this.googleSheetsService.appendContactLog(body);
+      return { success: true };
+    } catch {
+      return { success: false };
+    }
   }
 
   @Get('format-sheets')
