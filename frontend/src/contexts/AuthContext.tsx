@@ -10,7 +10,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   user: User | null
   login: (username: string, password: string) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
   isLoading: boolean
 }
 
@@ -70,7 +70,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authApi.logout()
+    } catch {
+      // Proceed with local logout even if server call fails
+    }
     localStorage.removeItem('techno_admin_token')
     localStorage.removeItem('techno_admin_auth')
     setUser(null)

@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
+import { TokenBlacklistService } from './token-blacklist.service';
 
 interface AdminUser {
   id: string;
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private tokenBlacklist: TokenBlacklistService,
   ) {
     // Initialize admin users from environment or use default
     // In production, this should be stored in database
@@ -99,6 +101,17 @@ export class AuthService {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  logout(token: string): void {
+    try {
+      const decoded = this.jwtService.decode(token) as { exp?: number } | null;
+      const expiresAt = decoded?.exp ? decoded.exp * 1000 : Date.now() + 8 * 60 * 60 * 1000;
+      this.tokenBlacklist.add(token, expiresAt);
+      this.logger.log('User logged out, token blacklisted');
+    } catch {
+      // Decode failure is non-fatal — token is effectively gone when client discards it
     }
   }
 }

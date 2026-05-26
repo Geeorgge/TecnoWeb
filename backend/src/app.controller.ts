@@ -1,6 +1,9 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { GoogleSheetsService } from './common/services/google-sheets.service';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { ContactLogRateLimitGuard } from './common/guards/contact-log-rate-limit.guard';
+import { LogContactDto } from './dto/log-contact.dto';
 
 @Controller()
 export class AppController {
@@ -27,9 +30,8 @@ export class AppController {
   }
 
   @Post('log/contact')
-  async logContact(
-    @Body() body: { tipo: string; pagina: string; dispositivo: string },
-  ): Promise<object> {
+  @UseGuards(ContactLogRateLimitGuard)
+  async logContact(@Body() body: LogContactDto): Promise<object> {
     try {
       await this.googleSheetsService.appendContactLog(body);
       return { success: true };
@@ -39,6 +41,7 @@ export class AppController {
   }
 
   @Get('format-sheets')
+  @UseGuards(JwtAuthGuard)
   async formatGoogleSheets(): Promise<object> {
     try {
       await this.googleSheetsService.createHeaderRow();

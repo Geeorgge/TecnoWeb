@@ -101,6 +101,10 @@ export const authApi = {
     const response = await api.get('/auth/profile')
     return response.data
   },
+
+  logout: async (): Promise<void> => {
+    await api.post('/auth/logout')
+  },
 }
 
 export default api
