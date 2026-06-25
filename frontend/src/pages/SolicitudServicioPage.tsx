@@ -30,7 +30,7 @@ const SolicitudServicioPage = () => {
             {/* Logo - ajustado para logo vertical */}
             <Link to="/" className="flex items-center group overflow-hidden rounded-lg border border-gray-200 shadow-sm">
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Tecno Hogar Logo"
                 className="w-auto h-12 md:h-14 object-cover scale-105"
               />
@@ -309,7 +309,7 @@ const SolicitudServicioPage = () => {
             <div>
               <Link to="/" className="inline-block mb-4 overflow-hidden rounded-lg border border-slate-600">
                 <img
-                  src="/logo-footer.png"
+                  src="/logo-footer.webp"
                   alt="Tecno Hogar Logo"
                   className="w-auto h-16 object-cover scale-105"
                 />

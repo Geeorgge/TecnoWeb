@@ -31,7 +31,7 @@ const HomePage = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center group overflow-hidden rounded-lg border border-gray-200 shadow-sm">
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Tecno Hogar Logo"
                 className="w-auto h-12 md:h-14 object-cover scale-105"
               />
@@ -221,7 +221,7 @@ const HomePage = () => {
             {/* Right - Hero Image */}
             <div className="relative lg:scale-110 lg:ml-8">
               <img
-                src="/hero.png"
+                src="/hero.webp"
                 alt="Técnico reparando electrodomésticos"
                 className="rounded-2xl shadow-2xl w-full max-w-xl mx-auto lg:max-w-none lg:min-h-[450px] object-cover"
               />
@@ -556,17 +556,17 @@ const HomePage = () => {
           {/* Images Row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
             <img
-              src="/proceso-1.png"
+              src="/proceso-1.webp"
               alt="Proceso paso 1"
               className="rounded-xl shadow-lg w-full h-56 object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
             />
             <img
-              src="/proceso-2.png"
+              src="/proceso-2.webp"
               alt="Proceso paso 2"
               className="rounded-xl shadow-lg w-full h-56 object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
             />
             <img
-              src="/proceso-3.png"
+              src="/proceso-3.webp"
               alt="Proceso paso 3"
               className="rounded-xl shadow-lg w-full h-56 object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
             />
@@ -942,7 +942,7 @@ const HomePage = () => {
             <div>
               <Link to="/" className="inline-block mb-4 overflow-hidden rounded-lg border border-slate-600">
                 <img
-                  src="/logo-footer.png"
+                  src="/logo-footer.webp"
                   alt="Tecno Hogar Logo"
                   className="w-auto h-16 object-cover scale-105"
                 />
