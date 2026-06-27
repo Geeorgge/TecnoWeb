@@ -8,6 +8,7 @@ import './App.css'
 const SolicitudServicioPage = lazy(() => import('./pages/SolicitudServicioPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </Router>
