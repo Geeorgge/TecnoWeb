@@ -4,7 +4,6 @@ import { logContact } from '../services/contactLogger'
 
 // Contact configuration from environment
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
-const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
 
 const SolicitudServicioPage = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -217,7 +216,7 @@ const SolicitudServicioPage = () => {
                 <p className="text-gray-500 text-sm">Lunes a Sábado · 9:00 AM – 5:00 PM</p>
               </div>
               <a
-                href={`tel:+${PHONE_NUMBER}`}
+                href={`tel:+${WHATSAPP_PHONE}`}
                 onClick={() => logContact('Llamar', 'Solicitar Servicio')}
                 className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-5 py-3 rounded-xl transition-all"
               >
@@ -259,7 +258,7 @@ const SolicitudServicioPage = () => {
                 WhatsApp
               </a>
               <a
-                href={`tel:+${PHONE_NUMBER}`}
+                href={`tel:+${WHATSAPP_PHONE}`}
                 onClick={() => logContact('Llamar', 'Solicitar Servicio')}
                 className="inline-flex items-center justify-center bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-4 rounded-lg font-semibold transition-all border-2 border-white/30 hover:scale-105"
               >

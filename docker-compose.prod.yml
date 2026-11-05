@@ -77,7 +77,6 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
         VITE_WHATSAPP_PHONE: ${VITE_WHATSAPP_PHONE:-5218441972327}
-        VITE_PHONE_NUMBER: ${VITE_PHONE_NUMBER:-5218444180769}
     container_name: techno-hogar-frontend
     restart: always
     ports:

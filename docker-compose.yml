@@ -73,7 +73,6 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
       VITE_WHATSAPP_PHONE: ${VITE_WHATSAPP_PHONE:-5218441972327}
-      VITE_PHONE_NUMBER: ${VITE_PHONE_NUMBER:-5218444180769}
     ports:
       - "5173:5173"
     volumes:

@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { logContact } from '../services/contactLogger'
 
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
-const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
 const GOOGLE_SHEETS_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL || 'https://docs.google.com/spreadsheets'
 
 const AdminPage = () => {
@@ -103,7 +102,7 @@ const AdminPage = () => {
           </a>
 
           <a
-            href={`tel:+${PHONE_NUMBER}`}
+            href={`tel:+${WHATSAPP_PHONE}`}
             onClick={() => logContact('Llamar', 'Admin')}
             className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center gap-3 hover:shadow-xl transition-all hover:scale-[1.02]"
           >

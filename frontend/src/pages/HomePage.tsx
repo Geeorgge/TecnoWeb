@@ -5,7 +5,6 @@ import { logContact } from '../services/contactLogger'
 
 // Contact configuration from environment
 const WHATSAPP_PHONE = import.meta.env.VITE_WHATSAPP_PHONE || '5218441972327'
-const PHONE_NUMBER = import.meta.env.VITE_PHONE_NUMBER || '5218444180769'
 
 const HomePage = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -695,7 +694,7 @@ const HomePage = () => {
                   WhatsApp
                 </a>
                 <a
-                  href={`tel:+${PHONE_NUMBER}`}
+                  href={`tel:+${WHATSAPP_PHONE}`}
                   onClick={() => logContact('Llamar', 'Inicio')}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
@@ -767,7 +766,7 @@ const HomePage = () => {
                   WhatsApp
                 </a>
                 <a
-                  href={`tel:+${PHONE_NUMBER}`}
+                  href={`tel:+${WHATSAPP_PHONE}`}
                   onClick={() => logContact('Llamar', 'Inicio')}
                   className="flex items-center justify-center w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold transition-all"
                 >
