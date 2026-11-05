@@ -9,12 +9,10 @@ WORKDIR /app
 # Build arguments for environment variables
 ARG VITE_API_URL
 ARG VITE_WHATSAPP_PHONE
-ARG VITE_PHONE_NUMBER
 
 # Set environment variables for build
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_WHATSAPP_PHONE=$VITE_WHATSAPP_PHONE
-ENV VITE_PHONE_NUMBER=$VITE_PHONE_NUMBER
 
 # Copy package files
 COPY package*.json ./
